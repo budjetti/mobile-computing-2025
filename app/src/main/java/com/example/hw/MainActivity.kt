@@ -1,5 +1,6 @@
 package com.example.hw
 
+import SampleData
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,6 +28,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hw.ui.theme.HWTheme
 import android.content.res.Configuration
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +44,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             HWTheme {
+                /*
                 Surface(modifier = Modifier.fillMaxSize()) {
                     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                         Greeting(
@@ -42,8 +53,10 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 }
+                */
+                Conversation(SampleData.conversationSample)
             }
-            Text("Hello, MobiComp!")
+            // Text("Hello, MobiComp!")
         }
     }
 }
@@ -62,7 +75,15 @@ fun MessageCard(msg: Message) {
                 .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Column {
+
+        var isExpanded by remember { mutableStateOf(false) }
+        val surfaceColor by animateColorAsState(
+            if (isExpanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+        )
+
+        Column (
+            modifier = Modifier.clickable { isExpanded = !isExpanded }
+        ){
             Text(
                 text = msg.author,
                 color = MaterialTheme.colorScheme.secondary,
@@ -73,11 +94,14 @@ fun MessageCard(msg: Message) {
             )
             Surface (
                 shape = MaterialTheme.shapes.medium,
-                shadowElevation = 1.dp
+                shadowElevation = 1.dp,
+                color = surfaceColor,
+                modifier = Modifier.animateContentSize().padding(1.dp)
             ){
                 Text(
                     text = msg.body,
                     modifier = Modifier.padding(all = 4.dp),
+                    maxLines = if (isExpanded) Int.MAX_VALUE else 1,
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
@@ -101,6 +125,23 @@ fun PreviewMessageCard() {
                 msg = Message("John Meow", "Feed me!")
             )
         }
+    }
+}
+
+@Composable
+fun Conversation(messages: List<Message>) {
+    LazyColumn {
+        items(messages) { message ->
+            MessageCard(message)
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewConversation() {
+    HWTheme {
+        Conversation(SampleData.conversationSample)
     }
 }
 
