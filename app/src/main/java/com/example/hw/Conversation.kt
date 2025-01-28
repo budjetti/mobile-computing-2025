@@ -40,7 +40,9 @@ fun Conversation(navController: NavController) {
         Column {
             Button(onClick = {
                 navController.navigate("OtherScreen")
-            } ) {
+            },
+            modifier = Modifier.padding(all = 20.dp)
+            ) {
                 Text("Other Screen")
             }
             ConversationList(SampleData.conversationSample)
