@@ -39,7 +39,9 @@ fun Conversation(navController: NavController) {
     HWTheme {
         Column {
             Button(onClick = {
-                navController.navigate("OtherScreen")
+                navController.navigate("OtherScreen") {
+                    popUpTo("OtherScreen") { inclusive = true }
+                }
             },
             modifier = Modifier.padding(all = 20.dp)
             ) {
