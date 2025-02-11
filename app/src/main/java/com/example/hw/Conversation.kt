@@ -28,11 +28,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import androidx.room.Room
+import coil3.compose.AsyncImage
+import java.io.File
 
 @Composable
 fun Conversation(navController: NavController) {
@@ -56,15 +61,72 @@ data class Message(val author: String, val body: String)
 
 @Composable
 fun MessageCard(msg: Message) {
+
+    val context = LocalContext.current
+
+    val db = Room.databaseBuilder(
+        context.applicationContext,
+        AppDatabase::class.java, "database-name"
+    ).build()
+    val dao = db.userProfileDao()
+
+    var username by remember { mutableStateOf("") }
+    var pfpPath by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(Unit) {
+        try {
+            dao.getProfile()?.let { profile ->
+                username = profile.username
+                pfpPath = profile.imagePath
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     Row (modifier = Modifier.padding(all = 8.dp)){
-        Image(
-            painter = painterResource(R.drawable.cat),
-            contentDescription = "Depiction of user",
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
-        )
+        if (pfpPath != null) {
+            // Use Coil's AsyncImage to load the image from the stored file.
+            AsyncImage(
+                model = File(pfpPath!!),
+                contentDescription = "Depiction of user",
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
+            )
+        } else {
+            Image(
+                painter = painterResource(R.drawable.cat),
+                contentDescription = "Depiction of user",
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
+            )
+        }
+//        Image(
+//            painter = painterResource(R.drawable.cat),
+//            contentDescription = "Depiction of user",
+//            modifier = Modifier
+//                .size(40.dp)
+//                .clip(CircleShape)
+//                .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
+//        )
+
+//        val sizeResolver = rememberConstraintsSizeResolver()
+//        val painter = rememberAsyncImagePainter(
+//            model = ImageRequest.Builder(LocalPlatformContext.current)
+//                .data("https://example.com/image.jpg")
+//                .size(sizeResolver)
+//                .build(),
+//        )
+
+//        Image(
+//            painter = painter,
+//            contentDescription = null,
+//            modifier = Modifier.then(sizeResolver),
+//        )
         Spacer(modifier = Modifier.width(8.dp))
 
         var isExpanded by remember { mutableStateOf(false) }
@@ -72,11 +134,16 @@ fun MessageCard(msg: Message) {
             if (isExpanded) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
         )
 
+        if (username == ""){
+            username = "default username"
+        }
+
         Column (
             modifier = Modifier.clickable { isExpanded = !isExpanded }
         ){
             Text(
-                text = msg.author,
+                //text = msg.author,
+                text = username,
                 color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.titleSmall
             )
