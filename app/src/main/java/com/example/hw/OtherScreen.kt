@@ -115,7 +115,7 @@ fun OtherScreen(navController: NavController) {
                 }
             }
         ) {
-            Text("Save Profile Picture")
+            Text("Save Username And Picture")
         }
     }
 }
