@@ -118,4 +118,7 @@ dependencies {
 
     // optional - Paging 3 Integration
     implementation("androidx.room:room-paging:$room_version")
+
+    // notifications
+    implementation("androidx.core:core-ktx:1.15.0")
 }
