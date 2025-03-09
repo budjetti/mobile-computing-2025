@@ -39,6 +39,18 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+
 @Composable
 fun OtherScreen(navController: NavController) {
     val context = LocalContext.current
@@ -165,6 +177,13 @@ fun OtherScreen(navController: NavController) {
         ) {
             Text(enableNotificationsButtonText)
         }
+
+        Spacer(modifier = Modifier.height(64.dp))
+
+        YoutubePlayer(
+            youtubeVideoId = "um0ETkJABmI",
+            lifecycleOwner = LocalLifecycleOwner.current
+        )
     }
 }
 
@@ -244,4 +263,32 @@ fun savePfp(context: Context, uri: Uri): File {
         copyUriToFile(context, uri, outFile)
     }
     return outFile
+}
+
+
+// https://www.youtube.com/watch?v=E_8LHkn4g-Q&t=44s&ab_channel=AhmedGuedmioui
+
+@Composable
+fun YoutubePlayer(
+    youtubeVideoId: String,
+    lifecycleOwner: LifecycleOwner
+) {
+
+    AndroidView(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clip(RoundedCornerShape(16.dp)),
+        factory = { context ->
+            YouTubePlayerView(context = context).apply {
+                lifecycleOwner.lifecycle.addObserver(this)
+
+                addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
+                    override fun onReady(youTubePlayer: YouTubePlayer) {
+                        youTubePlayer.loadVideo(youtubeVideoId, 0f)
+                    }
+                })
+            }
+        })
+
 }

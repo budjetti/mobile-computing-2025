@@ -124,4 +124,7 @@ dependencies {
 
     // splashscreen
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+    // youtube player
+    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.28")
 }
