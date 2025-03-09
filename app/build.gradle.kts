@@ -121,4 +121,7 @@ dependencies {
 
     // notifications
     implementation("androidx.core:core-ktx:1.15.0")
+
+    // splashscreen
+    implementation("androidx.core:core-splashscreen:1.0.1")
 }

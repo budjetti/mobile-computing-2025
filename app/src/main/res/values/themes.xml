@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="Theme.CatSplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splashscreen_color</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/cat</item>
+        <item name="postSplashScreenTheme">@style/Theme.HW</item>
+    </style>
 
     <style name="Theme.HW" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>
