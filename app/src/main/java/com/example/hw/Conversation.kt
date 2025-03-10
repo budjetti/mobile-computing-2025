@@ -105,28 +105,7 @@ fun MessageCard(msg: Message) {
                     .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
             )
         }
-//        Image(
-//            painter = painterResource(R.drawable.cat),
-//            contentDescription = "Depiction of user",
-//            modifier = Modifier
-//                .size(40.dp)
-//                .clip(CircleShape)
-//                .border(1.5.dp, MaterialTheme.colorScheme.primary, CircleShape)
-//        )
 
-//        val sizeResolver = rememberConstraintsSizeResolver()
-//        val painter = rememberAsyncImagePainter(
-//            model = ImageRequest.Builder(LocalPlatformContext.current)
-//                .data("https://example.com/image.jpg")
-//                .size(sizeResolver)
-//                .build(),
-//        )
-
-//        Image(
-//            painter = painter,
-//            contentDescription = null,
-//            modifier = Modifier.then(sizeResolver),
-//        )
         Spacer(modifier = Modifier.width(8.dp))
 
         var isExpanded by remember { mutableStateOf(false) }
